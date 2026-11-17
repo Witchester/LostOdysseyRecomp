@@ -1795,8 +1795,13 @@ void Publish(uint8_t *base, uint32_t config)
                            L"設定輸出尺寸；全螢幕使用桌面尺寸。");
             break;
         case GraphicsRow::Preset:
+#if LO_PLATFORM_ANDROID
+            next.help = Tr(L"Original uses 720p at 30 FPS. Low-end renders at 480p and scales to the screen at 30 FPS; it also disables dynamic shadows, motion blur, depth of field and bloom.",
+                           L"原版使用 720p、30 FPS。低配置以 480p 渲染並縮放至螢幕，維持 30 FPS；亦關閉動態陰影、動態模糊、景深與光暈。");
+#else
             next.help = Tr(L"Both use 720p at 30 FPS. Low-end turns off dynamic shadows, motion blur, depth of field and bloom and uses the standard scaling filter.",
                            L"兩者皆為 720p、30 FPS。低配置會關閉動態陰影、動態模糊、景深與光暈，並使用標準縮放濾鏡。");
+#endif
             break;
         case GraphicsRow::RenderResolution:
 #if LO_PLATFORM_MACOS

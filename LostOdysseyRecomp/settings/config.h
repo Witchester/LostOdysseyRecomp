@@ -101,7 +101,7 @@ struct Config
     // bars. Applied live. Android always uses Auto.
     gpu::aspect_ratio::Mode aspectRatio = gpu::aspect_ratio::Mode::Auto;
     int internalResolution = 720; // Factory default is the Xbox 360's native 720p. 0 follows output (up to 4K);
-                                  // 720/1080/1440/2160 select scene height;
+                                  // Android also offers 480; 720/1080/1440/2160 select scene height;
                                   // InternalResolutionNative renders at the drawable's pixel size.
     WindowMode windowMode = WindowMode::Windowed;
 #if LO_PLATFORM_MACOS

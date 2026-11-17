@@ -73,6 +73,8 @@ inline void SelectAa(Config& config, uint32_t choice)
 // Render resolution choices, in menu order (Config::internalResolution values).
 #if LO_PLATFORM_MACOS
 inline constexpr int RenderResolutions[] = {0, 720, 1080, 1440, 2160, InternalResolutionNative};
+#elif LO_PLATFORM_ANDROID
+inline constexpr int RenderResolutions[] = {0, 480, 720, 1080, 1440, 2160};
 #else
 inline constexpr int RenderResolutions[] = {0, 720, 1080, 1440, 2160};
 #endif
@@ -83,21 +85,29 @@ inline uint32_t RenderResolutionChoice(const Config& config)
     return 0;
 }
 // Graphics preset: a shortcut for the rows it sets, shown as the preset those
-// rows match (Custom otherwise). Nothing of its own is saved. Both render the
-// original 720p at 30 FPS; Low-end also turns off the game's costliest effects
-// for weak hardware, Original keeps their retail state.
+// rows match (Custom otherwise). Nothing of its own is saved. Android's Low-end
+// renders at 480p; Original and the other platforms use 720p. Both target 30 FPS.
 enum class Preset : uint32_t { Original, LowEnd, Custom };
 inline constexpr uint32_t PresetChoiceCount = 2; // Custom is shown, never chosen
 inline void ApplyPreset(Config& config, Preset preset)
 {
     const bool low = preset == Preset::LowEnd;
+#if LO_PLATFORM_ANDROID
+    config.internalResolution = low ? 480 : 720;
+#else
     config.internalResolution = 720;
+#endif
     config.frameRate = 30;
     config.dynamicShadows = low ? 0 : 1;
     config.motionBlur = !low;
     config.depthOfFieldPercent = low ? 0 : 100;
     config.bloom = !low;
+    // At 480p the final image needs bicubic reconstruction to the phone surface.
+#if LO_PLATFORM_ANDROID
+    config.scalingQuality = 1;
+#else
     config.scalingQuality = low ? 0 : 1; // Standard (bilinear) or High (bicubic)
+#endif
 }
 inline Preset PresetOf(const Config& config)
 {
